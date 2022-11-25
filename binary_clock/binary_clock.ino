@@ -13,7 +13,7 @@ RTC_DS1307 RTC;
 #define LED_TYPE WS2812B    
 #define COLOR_ORDER GRB
 #define NUM_LEDS 11
-#define BRIGHTNESS 30
+#define BRIGHTNESS 15
 #define FRAMES_PER_SECOND 120
 
 CRGB leds[NUM_LEDS];
@@ -46,7 +46,7 @@ FastLED.show();
   // insert a delay to keep the framerate modest
 FastLED.delay(1000/FRAMES_PER_SECOND); 
 // do some periodic updates
-EVERY_N_MILLISECONDS( 10 ) { gHue++; } // slowly cycle the "base color" through the 
+EVERY_N_MILLISECONDS( 100 ) { gHue++; } // slowly cycle the "base color" through the 
 
 
 //TIME
@@ -61,11 +61,11 @@ void printTime(int m, int h) {
   Serial.print(h, DEC);
   Serial.print(':');
   Serial.print(m, DEC);
-
+  //RainbowAnimation();
   Serial.println();
 }
 
-void Rainbow() 
+void RainbowAnimation() 
 {
   // FastLED's built-in rainbow generator
   fill_rainbow( leds, NUM_LEDS, gHue, 15);
@@ -73,11 +73,48 @@ void Rainbow()
 }
 
 void SetLEDsOfCurrentTime(int m, int h) {
-    
+    Reset();
     byte min = byte(m);
+    byte hour = byte(h);
     Serial.println(min, BIN);
-    Serial.println(30, BIN);
-    if(min && 30) {
-      Serial.println("!!");
+    Serial.println(hour, BIN);
+    leds[4] = CRGB::Red;
+
+
+    for(int i = 0; i <= 3 ; i++){
+      byte byteVal = hour;
+      Serial.println("Erg-Hour:");
+      Serial.println(byteVal,BIN);
+      byteVal = byteVal >> i;
+      byteVal = byteVal << 3;
+      byteVal = byteVal >> 3;
+      
+      Serial.println(byteVal,BIN);
+      Serial.println("for");
+      Serial.println(i);
+      Serial.println("########");
+      if(byteVal & 0b1)leds[i] = CRGB::Blue;
+      else leds[i] = CRGB::Black;
     }
+
+    for(int u = 0; u <= 5 ; u++){
+      byte byteVal = min;
+      byteVal = byteVal >> u;
+      byteVal = byteVal << 5;
+      byteVal = byteVal >> 5;
+      if(byteVal & 0b1)leds[u+5] = CRGB::Yellow;
+      else leds[u] = CRGB::Black;
+    }
+    
+    
+
+    
+    
+}
+
+void Reset() {
+  Serial.println("RESET");
+  for (int i = 0; i < 11; i++) {
+    leds[i] = CRGB::Black;
+  }
 }
