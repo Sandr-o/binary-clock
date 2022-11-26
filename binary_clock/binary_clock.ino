@@ -58,11 +58,11 @@ void loop () {
 
   printTime(curr_min, curr_hour);
 
-  leds[4] = CRGB::Red;
+  
   
   //SetLEDsOfCurrentTime(curr_min, curr_hour);
-  SetLEDsOfCurrentTime(32, 13);
-  delay(10000);
+  SetLEDsOfCurrentTime(47, 18);
+  delay(100);
 }
 void printTime(int m, int h) {
   Serial.print(h, DEC);
@@ -80,7 +80,7 @@ void RainbowAnimation()
 }
 
 void SetLEDsOfCurrentTime(int m, int h) {
-
+  leds[4] = CRGB::Red;
   byte min = byte(m);
   byte hour = byte(h);
   if (hour >= 12) hour -= 12;
@@ -91,29 +91,29 @@ void SetLEDsOfCurrentTime(int m, int h) {
 
 
   Serial.println(hour);
-  for (int i = 0; i <= 3 ; i++) {
-    byte byteVal = hour;
+  for (int i = 3; i >= 0 ; i--) {
+    byte bhour = hour;
     Serial.println("Read Bit from Clock");
     Serial.println(i);
-    if (bitRead(byteVal, i))
+    if (bitRead(bhour, i))
       Serial.println("LED was set");
     else
       Serial.println("LED was not set");
 
-    if (bitRead(byteVal, i))leds[i] = CRGB::Blue;
+    if (bitRead(bhour, i))leds[i] = CRGB::Blue;
     else leds[i] = CRGB::Black;
   }
 
-  for (int u = 0; u <= 5 ; u++) {
-    byte byteVal = min;
+  for (int u = 5; u >= 0 ; u--) {
+    byte bmin = min;
     Serial.println("Read Bit from Clock");
-    Serial.println(u);
-    if (bitRead(byteVal, u))
+    Serial.println(u+5);
+    if (bitRead(bmin, u))
       Serial.println("LED was set");
     else
       Serial.println("LED was not set");
 
-    if (bitRead(byteVal, u))leds[u + 5] = CRGB::Yellow;
-    else leds[u] = CRGB::Black;
+    if (bitRead(bmin, u))leds[10-u] = CRGB::Yellow;
+    else leds[u + 5] = CRGB::Black;
   }
 }
